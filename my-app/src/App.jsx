@@ -1,22 +1,51 @@
-import './App.css'
-import ProductCard from './components/ProductCard';
-import image1 from './images/image1.webp';
-import image2 from './images/image2.webp';
-import image3 from './images/image3.webp';
-import image4 from './images/image4.webp';
-import image5 from './images/image5.webp';
+import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Home from "./pages/Home";
+import Cart from "./pages/Cart";
+import Menu from "./pages/Menu";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+
+import { ThemeContext } from "./context/ThemeContext";
+import { CartProvider } from "./context/CartContext";
 
 function App() {
+    const [theme, setTheme] = useState(
+        localStorage.getItem("theme") || "light"
+    );
+
+    const toggleTheme = () => {
+        const newTheme = theme === "light" ? "dark" : "light";
+
+        setTheme(newTheme);
+        localStorage.setItem("theme", newTheme);
+
+    };
+    
+    const appStyle = {
+        backgroundColor: theme === "dark" ? "#333" : "#fff",
+        color: theme === "dark" ? "#fff" : "#000",
+        minHeight: "100vh",
+        padding: "20px",
+    };
+
     return (
-        <div className="products">
-            <ProductCard image={image1} name="Обработка для собак" price={1200} />
-            <ProductCard image={image2} name="Обработка для кошек" price={1000} />
-            <ProductCard image={image3} name="Капли для глаз" price={800} />
-            <ProductCard image={image4} name="Лечебный шампунь" price={1500} />
-            <ProductCard image={image5} name="Лакомство" price={500} />
-            
-        </div>
+        <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            <CartProvider>
+                <div style={appStyle}>
+                    <BrowserRouter>
+                     <Menu/>
+                     <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                     </Routes>
+                    </BrowserRouter>
+                </div>
+            </CartProvider>
+        </ThemeContext.Provider>
     );
 }
-
-export default App
+export default App;

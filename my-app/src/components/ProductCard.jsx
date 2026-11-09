@@ -1,18 +1,27 @@
-import { useState } from 'react';
+import { useContext } from "react";
+import { CartContext } from "../context/CartContext";
 
 function ProductCard(props) {
+    const { addToCart } = useContext(CartContext);
 
-    const [count, setCount] = useState(0);
+    function handleAdd() {
+        addToCart({
+            name: props.name,
+            price: props.price
+        });
+    }
+
     return (
         <div className="product-card">
-            <img src={props.image} alt={props.name}/>
-            <h1>Название - {props.name}</h1>
-            <h1>Цена - {props.price}</h1>
-            <p>Кол-во {count}</p>
-            <button onClick={() => setCount(count + 1)}>Добавить в корзину</button>
-            
-        </div>
+            <img src={props.image} alt={props.name} width="200" height="200" />
 
+            <h2>{props.name}</h2>
+            <p>Цена: {props.price} ₽</p>
+
+            <button onClick={handleAdd}>
+                В корзину
+            </button>
+        </div>
     );
 }
 
